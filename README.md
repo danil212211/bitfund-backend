@@ -1,2 +1,1 @@
-# bitfund-backend
- 
+# hackathon
