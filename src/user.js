@@ -8,7 +8,7 @@ function checkExist(a) {
     return typeof a !== "undefined" && a !== null;
 }
 async function getUserByLog(email) {
-    return await db.query(`SELECT * FROM users WHERE email='${email}'`).catch(err => {throw err});
+    return await db.query(`SELECT * FROM user WHERE email='${email}'`).catch(err => {throw err});
 }
 let db= database.db;
 let codes=database.codes;
@@ -18,6 +18,7 @@ let userTypes = {
     verified : "VERIFIED"
 };
 async function reg(req) {
+
     let data=req.body;
     if (checkExist(data.email) && checkExist(data.pass)) {
         pass = String(data.pass);
@@ -31,7 +32,7 @@ async function reg(req) {
 
         if (isEmptyObject(ifExist)) {
             let user=await db.query(`
-                    INSERT INTO users (email,pass_hash,pass_salt,user_type) 
+                    INSERT INTO user (email,pass_hash,pass_salt,user_type) 
                     VALUES ( '${email}' ,'${hash}','${salt}','${userTypes.unverified}')`).catch(err => {throw err});
 
             let userId=user.insertId;
@@ -69,7 +70,7 @@ async function verification(req) {
     let verId= ver[0].id;
 
     if (verData===verificationData) {                  // Получили хэш из базы данных, сверяем. Если одинаковы - подверждаем почту
-        await db.query (`UPDATE users SET user_type='${userTypes.verified}' WHERE email='${email}'`).catch(err => {throw err});
+        await db.query (`UPDATE user SET user_type='${userTypes.verified}' WHERE email='${email}'`).catch(err => {throw err});
         await db.query (`DELETE FROM user_verification WHERE id='${verId}'`).catch(err => {throw err});
         return {
             "code" : codes.goodCode
