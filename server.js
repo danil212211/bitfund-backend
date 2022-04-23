@@ -1,15 +1,19 @@
 const express= require("express");
 const user = require("./src/user");
 const blog = require("./src/blog");
+const tag = require("./src/tag");
+const wallet=require("./src/wallet");
 const cors = require("cors");
+
 const project = require("./src/project");
 const messanger = require("./src/messanger");
 const multer= require("multer");
+
 const cookieParser = require('cookie-parser');
 const path = require('path');
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'C:/Projects_Hackaton/bitfund-backend/assets')
+        cb(null, 'C:/bitfund-front-stable/assets')
     },
     filename: function (req, file, cb) {
         cb(null, Date.now() + path.extname(file.originalname)+".png") //Appending extension
@@ -35,7 +39,7 @@ app.get("/project/:project_id",async(req,res)=> {
    let ans = await project.getProject(req);
    res.status(200).json(ans);
 });
-app.get("/project/",async(req,res)=>{
+app.get("/project",async(req,res)=>{
     let ans= await project.getProject(req);
     res.status(200).json(ans);
 });
@@ -48,7 +52,7 @@ app.get("/project/:project_id/blog/:blog_id",async(req,res)=> {
     res.status(200).json(ans);
 
 });
-app.post("/project",async(req,res)=> {
+app.post("/project",uploadProduct.single('image_logo'),async(req,res)=> {
     let ans = await project.addProject(req);
     res.status(200).json(ans);
 });
@@ -81,6 +85,14 @@ app.post("/wallet",async(req,res)=> {
     let ans= await wallet.payByWalletId(req);
     res.status(200).json(ans);
 });
+app.get("/tag",async(req,res)=> {
+   let ans= await tag.getTags(req);
+   res.status(200).json(ans);
+});
+app.get('/user/:id',async(req,res)=> {
+    let ans=await user.getUser(req);
+    res.status(200).json(ans);
+})
 app.get("/user/check",async(req,res) => {
    let ans= await user.check(req);
    res.status(200).json(ans);

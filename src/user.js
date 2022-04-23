@@ -113,9 +113,15 @@ async function log(req) {
         "code" : codes.badCode
     };
 }
+async function getUser(req) {
+    let id = req.params.id;
+    console.log(id);
+    return await db.query(`SELECT * FROM user WHERE id=${id}`);
+}
 module.exports = {
     register : reg,
     login    :  log,
     verify   : verification,
-    check : check
+    check : check,
+    getUser : getUser
 };
